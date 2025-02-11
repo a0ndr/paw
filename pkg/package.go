@@ -31,13 +31,13 @@ func Packages() TPackages {
 			if entry.IsDir() {
 				Log.Debugf("Debug: reading directory \"%s\"", entry.Name())
 
-				if len(strings.Split(entry.Name(), ":")) != 2 {
+				if len(strings.Split(entry.Name(), "-")) < 2 {
 					Log.Errorf("Warning: invalid package directory name \"%s\", skipping\n", entry.Name())
 					continue
 				}
 
-				name := strings.Split(entry.Name(), ":")[0]
-				version := strings.Split(entry.Name(), ":")[1]
+				name := strings.Split(entry.Name(), "-")[0]
+				version := strings.SplitN(entry.Name(), ":", 1)[1]
 
 				Log.Debugf("Debug: found package \"%s\" version %s", name, version)
 

@@ -1,0 +1,20 @@
+Name = "test"
+Version = "0.1.1"
+Description = "Test Package"
+
+Source = """
+  bin/
+  README.md
+"""
+
+Build = """
+  echo 'Hello, world!'
+"""
+
+Install = """
+  echo 'Installing'
+"""
+
+Configure = """
+  echo 'Configuring'
+"""
