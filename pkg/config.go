@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Debug   bool
 	DataDir string
+	Mirrors map[string]string
 
 	packages TPackages
 }

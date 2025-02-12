@@ -1,2 +1,5 @@
 Debug=true
 DataDir="examples/packages"
+
+[Mirrors]
+"main" = "http://localhost"
