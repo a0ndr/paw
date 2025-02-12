@@ -27,28 +27,6 @@ var CLI struct {
 	Path string `arg:"" help:"Package to build" default:"."`
 }
 
-type Pkgbuild struct {
-	Name        string `toml:"Name"`
-	Version     string `toml:"Version"`
-	Description string `toml:"Description"`
-	Source      string `toml:"Source"`
-
-	Build string `toml:"Build"`
-
-	PreInstall  string `toml:"PreInstall"`
-	Install     string `toml:"Install"`
-	PostInstall string `toml:"PostInstall"`
-
-	Configure string `toml:"Configure"`
-}
-
-type PkgMeta struct {
-	Name        string            `toml:"Name"`
-	Version     string            `toml:"Version"`
-	Description string            `toml:"Description"`
-	Checksums   map[string]string `toml:"Checksums"`
-}
-
 var tempDirPath string
 
 func cleanup(code int) {
@@ -146,7 +124,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var pkgbuild Pkgbuild
+	var pkgbuild _p.Build
 	_, err = toml.Decode(string(buildFileContent), &pkgbuild)
 	if err != nil {
 		i.Errorf("Failed to parse PKGBUILD: %s", err)
@@ -299,7 +277,7 @@ func main() {
 		cleanup(1)
 	}
 
-	pkgMeta := &PkgMeta{
+	pkgMeta := &_p.Meta{
 		Name:        pkgbuild.Name,
 		Version:     pkgbuild.Version,
 		Description: pkgbuild.Description,
