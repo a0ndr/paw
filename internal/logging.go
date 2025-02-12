@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"os"
 	"runtime"
 )
@@ -60,4 +61,24 @@ func (l *Logger) Debugf(format string, args ...interface{}) {
 	if l.Debug {
 		l.Printf(format+"\n", args...)
 	}
+}
+
+func Logf(format string, args ...interface{}) {
+	_, _ = color.New(color.FgYellow).Add(color.Bold).Print("==> ")
+	_, _ = color.New(color.Bold).Printf(format+"\n", args...)
+}
+
+func Log2f(format string, args ...interface{}) {
+	_, _ = color.New(color.FgCyan).Add(color.Bold).Print("  ==> ")
+	_, _ = color.New(color.Bold).Printf(format+"\n", args...)
+}
+
+func Errorf(format string, args ...interface{}) {
+	_, _ = color.New(color.FgRed).Add(color.Bold).Print("==> ")
+	_, _ = color.New(color.Bold).Printf(format+"\n", args...)
+}
+
+func Error2f(format string, args ...interface{}) {
+	_, _ = color.New(color.FgRed).Add(color.Bold).Print("  ==> ")
+	_, _ = color.New(color.Bold).Printf(format+"\n", args...)
 }

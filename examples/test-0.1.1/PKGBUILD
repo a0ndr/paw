@@ -8,7 +8,7 @@ Source = """
 """
 
 Build = """
-  echo 'Hello, world!'
+cp -r $SRCDIR $PKGDIR
 """
 
 Install = """

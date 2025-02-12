@@ -4,6 +4,7 @@
     <inspection_tool class="GoDfaErrorMayBeNotNil" enabled="true" level="WARNING" enabled_by_default="true">
       <functions>
         <function importPath="lure.sh/fakeroot" name="Command" />
+        <function importPath="os" name="Stat" />
       </functions>
     </inspection_tool>
   </profile>
