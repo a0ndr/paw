@@ -4,4 +4,5 @@
     Version = "0.1.1"
     Description = "Test Package"
     Repository = "main"
-    Checksum = "9e6ab36628e48ff2b7ddd4ee5ff95ad498069b680c41370f6d318b3bf0159520"
+    Checksum = "fcb3c5dcb1c6ba5ef157ebf60ae586c9eb1966d759292724c89cf572aa2214a7"
+    BuiltAt = 2025-02-13T21:43:42.593412546+01:00

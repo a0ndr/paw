@@ -12,10 +12,14 @@ type Config struct {
 	DataDir      string
 	PackageDir   string
 	Repositories map[string]string
+
+	Packages *DefList
+	Receipts []*Receipt
+	Cache    *Cache
 }
 
 var Cfg *Config
-var Log internal.Logger
+var Log *internal.Logger
 var configOnce sync.Once
 
 func LoadConfig(path string) {
@@ -36,8 +40,23 @@ func LoadConfig(path string) {
 			Log.Fatalf(ERR_FILE_NOT_FOUND, "Fatal: failed to parse config\n")
 		}
 
+		Log = &internal.Logger{}
 		Log.Debug = conf.Debug
 
 		Cfg = &conf
+
+		conf.Cache = &Cache{}
+		if err := conf.Cache.Load(); err != nil {
+			Log.Fatalf(ERR_GENERAL, "Could not load cache: %v\n", err)
+		}
+
+		conf.Packages = &DefList{}
+		if err := conf.Packages.Load(); err != nil {
+			Log.Fatalf(ERR_GENERAL, "Could not load packages: %v\n", err)
+		}
+
+		if err = conf.LoadReceipts(); err != nil {
+			Log.Fatalf(ERR_FILE_NOT_FOUND, "Fatal: failed to load receipts: %v\n", err)
+		}
 	})
 }

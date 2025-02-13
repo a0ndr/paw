@@ -3,10 +3,16 @@ package pkg
 import (
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/gobwas/glob"
 	"os"
 	"path"
 	"strings"
 )
+
+type KeyValue struct {
+	Key   string
+	Value any
+}
 
 func (dl DefList) Load() error {
 	packageDirs, err := os.ReadDir(Cfg.PackageDir)
@@ -24,7 +30,7 @@ func (dl DefList) Load() error {
 			return err
 		}
 
-		def := &Definition{}
+		def := &Package{}
 		_, err = toml.Decode(string(defFile), def)
 		if err != nil {
 			return err
@@ -41,26 +47,64 @@ func (dl DefList) Load() error {
 	return nil
 }
 
-func LoadMarks() (map[string]string, error) {
-	marks := make(map[string]string)
+func (dl DefList) FindLatest(name string) *Package {
+	g := glob.MustCompile(name)
 
-	markFiles, err := os.ReadDir(Cfg.PackageDir)
-	if err != nil {
-		return nil, err
+	var latest *Package
+	for pkg, def := range dl {
+		if g.Match(pkg) && (latest == nil || def.BuiltAt.After(latest.BuiltAt)) {
+			latest = def
+		}
 	}
 
-	for _, markFile := range markFiles {
-		if markFile.IsDir() || !strings.HasSuffix(markFile.Name(), ".mark") {
-			continue
-		}
+	return latest
+}
 
-		mark, err := os.ReadFile(path.Join(Cfg.PackageDir, markFile.Name()))
-		if err != nil {
-			return nil, err
-		}
+func (pkg *Package) FindConflicts() []*Package {
+	var conflicts []*Package
 
-		marks[strings.TrimSuffix(markFile.Name(), ".mark")] = string(mark)
+	for _, pkgConflict := range pkg.Conflicts {
+		conflict := Cfg.Packages.FindLatest(pkgConflict)
+		if conflict != nil {
+			conflicts = append(conflicts, conflict)
+		}
 	}
 
-	return marks, nil
+	for _, installedPkg := range *Cfg.Packages {
+		pkgConflicts := installedPkg.FindConflicts()
+		for _, pkgConflict := range pkgConflicts {
+			if pkgConflict != nil && pkgConflict.Name == pkg.Name {
+				conflicts = append(conflicts, pkgConflict)
+			}
+		}
+	}
+
+	return conflicts
+}
+
+func (pkg *Package) FindDependencies() []*Package {
+	var dependencies []*Package
+
+	for _, dep := range pkg.Dependencies {
+		dependency := Cfg.Packages.FindLatest(dep)
+		if dependency != nil {
+			conflicts := dependency.FindConflicts()
+			conflictNames := make([]string, len(conflicts))
+			for i, conflict := range conflicts {
+				conflictNames[i] = conflict.Name
+			}
+
+			if len(conflicts) > 0 {
+				Log.Fatalf(ERR_CONFLICT, "Error: package %s-%s conflicts with %s\n", dependency.Name, dependency.Version, strings.Join(conflictNames, ", "))
+			}
+			for _, dep2 := range dependency.FindDependencies() {
+				dependencies = append(dependencies, dep2)
+			}
+			dependencies = append(dependencies, dependency)
+		} else {
+			Log.Fatalf(ERR_NOT_FOUND, "Dependency '%s' of '%s' not found\n", dep, pkg.Name)
+		}
+	}
+
+	return dependencies
 }

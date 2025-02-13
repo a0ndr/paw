@@ -16,6 +16,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var CLI struct {
@@ -278,10 +279,14 @@ func main() {
 	}
 
 	pkgMeta := &_p.Meta{
-		Name:        pkgbuild.Name,
-		Version:     pkgbuild.Version,
-		Description: pkgbuild.Description,
-		Checksums:   checksums,
+		Name:             pkgbuild.Name,
+		Version:          pkgbuild.Version,
+		Description:      pkgbuild.Description,
+		Checksums:        checksums,
+		Dependencies:     pkgbuild.Dependencies,
+		SoftDependencies: pkgbuild.SoftDependencies,
+		Conflicts:        pkgbuild.Conflicts,
+		BuiltAt:          time.Now(),
 	}
 
 	decoder := toml.NewEncoder(f)

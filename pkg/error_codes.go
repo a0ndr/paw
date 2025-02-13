@@ -6,4 +6,5 @@ var (
 	ERR_OS_ERROR       = 3
 	ERR_NOT_FOUND      = 4
 	ERR_INVALID_PARAMS = 5
+	ERR_CONFLICT       = 6
 )

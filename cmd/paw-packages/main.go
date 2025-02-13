@@ -61,7 +61,7 @@ func main() {
 				if mark == "r" {
 					def, ok := packages[pkg]
 					if !ok {
-						_p.Log.Errorf("Warning: install mark for not installed package %s\n", pkg)
+						_p.Log.Errorf("Warning: remove mark for not installed package %s\n", pkg)
 						continue
 					}
 

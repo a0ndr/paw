@@ -41,7 +41,7 @@ func main() {
 	_p.LoadConfig(CLI.Config)
 
 	i.Logf("Syncing repo package lists...")
-	cache := &_p.Cache{Packages: map[string]*_p.Definition{}}
+	cache := &_p.Cache{Packages: &_p.DefList{}}
 
 	for name, repo := range _p.Cfg.Repositories {
 		i.Log2f("Syncing %s (%s)...", name, repo)
@@ -63,11 +63,11 @@ func main() {
 		}
 
 		for fqn, pkg := range list.Packages {
-			if existing, ok := cache.Packages[pkg.Name]; ok {
+			if existing, ok := (*cache.Packages)[pkg.Name]; ok {
 				i.Log2f("Package %s conflict (repos: %s & %s), overwriting", fqn, name, existing.Repository)
 			}
 
-			cache.Packages[fqn] = pkg.ToDefinition(name)
+			(*cache.Packages)[fqn] = pkg.ToDefinition(name)
 		}
 	}
 
