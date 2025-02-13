@@ -1,5 +1,6 @@
-Debug=true
-DataDir="examples/packages"
+Debug = true
+DataDir = "examples/data"
+PackageDir = "examples/packages"
 
-[Mirrors]
-"main" = "http://localhost"
+[Repositories]
+"main" = "http://localhost:8080"

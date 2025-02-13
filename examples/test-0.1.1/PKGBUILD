@@ -1,5 +1,5 @@
 Name = "test"
-Version = "0.1.2"
+Version = "0.1.1"
 Description = "Test Package"
 
 Source = """

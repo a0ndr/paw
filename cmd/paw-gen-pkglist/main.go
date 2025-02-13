@@ -80,7 +80,7 @@ func main() {
 	}
 
 	i.Logf("Generating package list...")
-	packages := make(map[string]*_p.Meta)
+	packages := &_p.List{Packages: make(map[string]*_p.Entry)}
 
 	contents, err := os.ReadDir(CLI.Path)
 	if err != nil {
@@ -94,13 +94,20 @@ func main() {
 		}
 
 		i.Log2f("Processing %s", file.Name())
-		meta, err := readMetaFromTarball(filepath.Join(CLI.Path, file.Name()))
+
+		filePath := filepath.Join(CLI.Path, file.Name())
+		meta, err := readMetaFromTarball(filePath)
 		if err != nil {
 			i.Error2f("Could not read package meta of package %s: %s", file.Name(), err.Error())
 			os.Exit(1)
 		}
 
-		packages[fmt.Sprintf("%s-%s", meta.Name, meta.Version)] = meta
+		checksum, err := i.CalculateFileSHA256(filePath)
+		if err != nil {
+			i.Error2f("Could not calculate checksum of package %s: %s", file.Name(), err.Error())
+		}
+
+		packages.Packages[fmt.Sprintf("%s-%s", meta.Name, meta.Version)] = meta.ToEntry(checksum)
 	}
 
 	i.Logf("Saving package list...")

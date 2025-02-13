@@ -322,6 +322,22 @@ func main() {
 		cleanup(1)
 	}
 
+	if pkgbuild.PreRemove != "" {
+		err = os.WriteFile(path.Join(pkgDir, "PREREMOVE.sh"), []byte(fmt.Sprintf("#!/usr/bin/env sh\n%s", pkgbuild.PreRemove)), 0644)
+		if err != nil {
+			i.Error2f("Failed to write pre-remove script: %s", err)
+			cleanup(1)
+		}
+	}
+
+	if pkgbuild.Remove != "" {
+		err = os.WriteFile(path.Join(pkgDir, "REMOVE.sh"), []byte(fmt.Sprintf("#!/usr/bin/env sh\n%s", pkgbuild.Remove)), 0644)
+		if err != nil {
+			i.Error2f("Failed to write remove script: %s", err)
+			cleanup(1)
+		}
+	}
+
 	err = os.Chdir(cwd)
 	if err != nil {
 		i.Error2f("Failed to change directory: %s", err)

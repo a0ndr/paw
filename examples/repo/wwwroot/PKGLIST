@@ -1,0 +1,6 @@
+[Packages]
+  [Packages."test-0.1.1"]
+    Name = "test"
+    Version = "0.1.1"
+    Description = "Test Package"
+    Checksum = "9e6ab36628e48ff2b7ddd4ee5ff95ad498069b680c41370f6d318b3bf0159520"

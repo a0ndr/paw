@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/BurntSushi/toml"
 	i "github.com/a0ndr/paw/internal"
+	_p "github.com/a0ndr/paw/pkg"
 	"github.com/alecthomas/kong"
 	"os"
 	"os/exec"
@@ -13,16 +14,6 @@ import (
 
 var CLI struct {
 	Path string `arg:"" help:"Package to generate checksums for" default:"."`
-}
-
-type Pkgbuild struct {
-	Name        string `toml:"Name"`
-	Version     string `toml:"Version"`
-	Description string `toml:"Description"`
-	Source      string `toml:"Source"`
-	Build       string `toml:"Build"`
-	Install     string `toml:"Install"`
-	Configure   string `toml:"Configure"`
 }
 
 func main() {
@@ -45,7 +36,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var pkgbuild Pkgbuild
+	var pkgbuild _p.Build
 	_, err = toml.Decode(string(buildFileContent), &pkgbuild)
 	if err != nil {
 		i.Errorf("Failed to parse build file: %s", err.Error())

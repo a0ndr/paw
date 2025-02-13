@@ -8,11 +8,10 @@ import (
 )
 
 type Config struct {
-	Debug   bool
-	DataDir string
-	Mirrors map[string]string
-
-	packages TPackages
+	Debug        bool
+	DataDir      string
+	PackageDir   string
+	Repositories map[string]string
 }
 
 var Cfg *Config
