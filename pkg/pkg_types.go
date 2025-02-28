@@ -26,9 +26,10 @@ type Build struct {
 	Description string `toml:"Description"`
 	Source      string `toml:"Source"`
 
-	Dependencies     []string `toml:"Dependencies"`
-	SoftDependencies []string `toml:"SoftDependencies"`
-	Conflicts        []string `toml:"Conflicts"`
+	BuildDependencies []string `toml:"BuildDependencies"`
+	Dependencies      []string `toml:"Dependencies"`
+	SoftDependencies  []string `toml:"SoftDependencies"`
+	Conflicts         []string `toml:"Conflicts"`
 
 	Build string `toml:"Build"`
 

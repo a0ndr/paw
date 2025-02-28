@@ -158,6 +158,15 @@ func main() {
 		cleanup(1)
 	}
 
+	i.Logf("Checking build dependencies...")
+	for _, dep := range pkgbuild.BuildDependencies {
+		pkg := _p.Cfg.Packages.Find(dep)
+		if pkg == nil {
+			i.Log2f("Build dependency %s not installed", dep)
+			cleanup(1)
+		}
+	}
+
 	// GATHER STUFF
 	i.Logf("Gathering sources...")
 	err = os.Chdir(srcDir)

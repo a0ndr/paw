@@ -32,7 +32,7 @@ func main() {
 			receipt.AddOperation(dependency, "install")
 		}
 
-		receipt.AddOperation(pkg, "i")
+		receipt.AddOperation(pkg, "install")
 	}
 
 	err := receipt.Flush()

@@ -4,5 +4,13 @@
     Version = "0.1.1"
     Description = "Test Package"
     Repository = "main"
-    Checksum = "fcb3c5dcb1c6ba5ef157ebf60ae586c9eb1966d759292724c89cf572aa2214a7"
-    BuiltAt = 2025-02-13T21:43:42.593412546+01:00
+    Checksum = "ea26e4f1175d37d53e351f15c239a7b19b212d87c3d1efb7ba0a97b385db6d56"
+    Dependencies = ["test-2-*"]
+    BuiltAt = 2025-02-14T18:33:07.72746576+01:00
+  [Packages."test-2-0.1.1"]
+    Name = "test-2"
+    Version = "0.1.1"
+    Description = "Test Package"
+    Repository = "main"
+    Checksum = "50c33ebda138386bac9a0cb97b992e47756d9121f7e8c96bea0597c830673e20"
+    BuiltAt = 2025-02-14T18:32:58.744350492+01:00

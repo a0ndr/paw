@@ -9,12 +9,7 @@ import (
 	"strings"
 )
 
-type KeyValue struct {
-	Key   string
-	Value any
-}
-
-func (dl DefList) Load() error {
+func (dl *DefList) Load() error {
 	packageDirs, err := os.ReadDir(Cfg.PackageDir)
 	if err != nil {
 		return err
@@ -41,17 +36,18 @@ func (dl DefList) Load() error {
 			return fmt.Errorf("package directory '%s' does not match it's name and version '%s-%s'", packageDir.Name(), def.Name, def.Version)
 		}
 
-		dl[fqn] = def
+		(*dl)[fqn] = def
 	}
 
 	return nil
 }
 
-func (dl DefList) FindLatest(name string) *Package {
+func (cache *Cache) FindLatest(name string) *Package {
+	name = name + "-*"
 	g := glob.MustCompile(name)
 
 	var latest *Package
-	for pkg, def := range dl {
+	for pkg, def := range *cache.Packages {
 		if g.Match(pkg) && (latest == nil || def.BuiltAt.After(latest.BuiltAt)) {
 			latest = def
 		}
@@ -60,11 +56,41 @@ func (dl DefList) FindLatest(name string) *Package {
 	return latest
 }
 
+func (cache *Cache) FindVersions(name string) []*Package {
+	name = name + "-*"
+	g := glob.MustCompile(name)
+
+	var pkgs []*Package
+	for pkg, def := range *cache.Packages {
+		if g.Match(pkg) {
+			pkgs = append(pkgs, def)
+		}
+	}
+
+	return pkgs
+}
+
+func (dl *DefList) Find(name string) *Package {
+	g := glob.MustCompile(name)
+
+	for pkg, def := range *dl {
+		if g.Match(pkg) {
+			return def
+		}
+	}
+
+	return nil
+}
+
+func (dl *DefList) IsInstalled(name string) bool {
+	return dl.Find(name) != nil
+}
+
 func (pkg *Package) FindConflicts() []*Package {
 	var conflicts []*Package
 
 	for _, pkgConflict := range pkg.Conflicts {
-		conflict := Cfg.Packages.FindLatest(pkgConflict)
+		conflict := Cfg.Packages.Find(pkgConflict)
 		if conflict != nil {
 			conflicts = append(conflicts, conflict)
 		}
@@ -86,7 +112,7 @@ func (pkg *Package) FindDependencies() []*Package {
 	var dependencies []*Package
 
 	for _, dep := range pkg.Dependencies {
-		dependency := Cfg.Packages.FindLatest(dep)
+		dependency := Cfg.Cache.FindLatest(dep)
 		if dependency != nil {
 			conflicts := dependency.FindConflicts()
 			conflictNames := make([]string, len(conflicts))

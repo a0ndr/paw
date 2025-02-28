@@ -1,13 +1,6 @@
-Name = "test"
+Name = "test-2"
 Version = "0.1.1"
 Description = "Test Package"
-
-Dependencies = ["test-2-*"]
-
-Source = """
-  bin/
-  README.md
-"""
 
 Build = """
 cp -r $SRCDIR $PKGDIR
